@@ -1,18 +1,29 @@
 package com.edsontelesfontes.Course.controller;
 
 import com.edsontelesfontes.Course.entities.User;
+import com.edsontelesfontes.Course.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
     @GetMapping
-    public ResponseEntity<User> findAll(){
-        User u = new User(1L,"maria", "maria@gmail.com", "9999-9999","101010");
-        return ResponseEntity.ok().body(u);
+    public ResponseEntity<List<User>> findAll(){
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id){
+        return ResponseEntity.ok(userService.findById(id));
     }
 }
