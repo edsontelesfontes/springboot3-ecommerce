@@ -4,6 +4,7 @@ import com.edsontelesfontes.Course.entities.User;
 import com.edsontelesfontes.Course.repositories.UserRepository;
 import com.edsontelesfontes.Course.services.exceptions.DatabaseException;
 import com.edsontelesfontes.Course.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -42,10 +43,15 @@ public class UserService {
     }
 
     public User update(Long id, User user) {
-        User user1 = userRepository.getReferenceById(id);
-        updateData(user1, user);
-        return userRepository.save(user1);
-    }
+        try {
+            User user1 = userRepository.getReferenceById(id);
+            updateData(user1, user);
+            return userRepository.save(user1);
+        }
+        catch(EntityNotFoundException e){
+            throw new ResourceNotFoundException(id);
+        }
+        }
 
     private void updateData(User user1, User user) {
         user1.setName(user.getName());
